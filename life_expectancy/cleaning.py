@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-import numpy as np
 
 def load_data():
     initial_data = pd.read_csv("life_expectancy/data/eu_life_expectancy_raw.tsv", sep='\t', header=0)
@@ -12,19 +11,16 @@ def clean_data(initial_data):
 
     var_columns = initial_data.iloc[:, 62:66]
     var_values = initial_data.iloc[:, :62]
-    data_clean = pd.melt(initial_data, id_vars=var_columns, value_vars=var_values,
+    data = pd.melt(initial_data, id_vars=var_columns, value_vars=var_values,
                         var_name='year', value_name='value')
 
-    data_clean['year'].replace([np.inf, -np.inf], np.nan, inplace=True)
-    data_clean.dropna(subset=['year'], inplace=True)
-    data_clean['value'] = data_clean['value'].str.replace('e', '')
-    data_clean = data_clean[data_clean['year'] != 'unit']
-
-    data_clean['year'] = pd.to_numeric(data_clean['year'], errors='coerce').astype('int')
-    data_clean['value'] = pd.to_numeric(data_clean['value'], errors='coerce').astype('float')
-    data_clean.dropna(subset=['value'], inplace=True)
-
-    data_pt = data_clean[data_clean['region'] == 'PT']
+    if any(not isinstance(x, int) for x in data['year']):
+        data['year'] = pd.to_numeric(data['year'], errors='coerce').astype('int')
+    data['value'] = data['value'].str.replace('e', '')
+    if any(not isinstance(x, float) for x in data['value']):
+        data['value'] = pd.to_numeric(data['value'], errors='coerce').astype('float')
+    data.dropna(subset=['value'], inplace=True)
+    data_pt = data[data['region'] == 'PT']
 
     return data_pt
 
