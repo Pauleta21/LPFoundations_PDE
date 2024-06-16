@@ -1,11 +1,12 @@
-import os
+import argparse
+from pathlib import Path
 import pandas as pd
 
-def load_data():
-    initial_data = pd.read_csv("life_expectancy/data/eu_life_expectancy_raw.tsv", sep='\t', header=0)
+def load_data(path_to_open):
+    initial_data = pd.read_csv(path_to_open, sep='\t', header=0)
     return initial_data
 
-def clean_data(initial_data):
+def clean_data(initial_data, country = 'PT'):
     initial_data[['unit', 'sex', 'age','region']] = initial_data['unit,sex,age,geo\\time'].str.split(',', expand=True)
     initial_data = initial_data.drop(['unit,sex,age,geo\\time'], axis=1)
 
@@ -16,23 +17,30 @@ def clean_data(initial_data):
 
     if any(not isinstance(x, int) for x in data['year']):
         data['year'] = pd.to_numeric(data['year'], errors='coerce').astype('int')
+
     data['value'] = data['value'].str.replace('e', '')
+
     if any(not isinstance(x, float) for x in data['value']):
         data['value'] = pd.to_numeric(data['value'], errors='coerce').astype('float')
+
     data.dropna(subset=['value'], inplace=True)
-    data_pt = data[data['region'] == 'PT']
+    data_pt = data[data['region'] == country]
 
     return data_pt
 
-def save_data(data_pt):
-    new_directory = os.path.join('life_expectancy/data', 'pt_life_expectancy.csv')
-    data_pt.to_csv(new_directory, index=False)
+def save_data(data_pt, path_to_save):
+    data_pt.to_csv(path_to_save, index=False)
 
-def main_function():
-    initial_data = load_data()
-    if initial_data is not None:
-        data_pt = clean_data(initial_data)
-        save_data(data_pt)
+def main_function(country = 'PT'):
+    path_to_open = Path("life_expectancy/data/eu_life_expectancy_raw.tsv").resolve()
+    path_to_save = Path("life_expectancy/data/pt_life_expectancy.csv").resolve()
 
-if __name__ == "__main__":
-    main_function()
+    initial_data = load_data(path_to_open)
+    data_pt = clean_data(initial_data, country)
+    save_data(data_pt, path_to_save)
+
+if __name__ == "__main__":  # pragma: no cover
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--country", default="PT", help="Country code to filter the data")
+    args = parser.parse_args()
+    main_function(args.country)
