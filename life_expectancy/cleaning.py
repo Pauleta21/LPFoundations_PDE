@@ -1,37 +1,46 @@
 import argparse
-import os
+from pathlib import Path
 import pandas as pd
-import numpy as np
 
+def load_data(path_to_open):
+    initial_data = pd.read_csv(path_to_open, sep='\t', header=0)
+    return initial_data
 
-def clean_data(country):
+def clean_data(initial_data, country = 'PT'):
+    initial_data[['unit', 'sex', 'age','region']] = initial_data['unit,sex,age,geo\\time'].str.split(',', expand=True)
+    initial_data = initial_data.drop(['unit,sex,age,geo\\time'], axis=1)
 
-    data=pd.read_csv("life_expectancy/data/eu_life_expectancy_raw.tsv",sep='\t', header=0)
-
-    data[['unit', 'sex', 'age','region']]=data['unit,sex,age,geo\\time'].str.split(',', expand=True)
-    data = data.drop(['unit,sex,age,geo\\time'], axis=1)
-
-    var_columns = data.iloc[:, 62:66]
-    var_values = data.iloc[:, :62]
-    data_long = pd.melt(data, id_vars=var_columns, value_vars=var_values,
+    var_columns = initial_data.iloc[:, 62:66]
+    var_values = initial_data.iloc[:, :62]
+    data = pd.melt(initial_data, id_vars=var_columns, value_vars=var_values,
                         var_name='year', value_name='value')
 
-    data_long['year'].replace([np.inf, -np.inf], np.nan, inplace=True)
-    data_long.dropna(subset=['year'], inplace=True)
+    if any(not isinstance(x, int) for x in data['year']):
+        data['year'] = pd.to_numeric(data['year'], errors='coerce').astype('int')
 
-    data_long['value'] = data_long['value'].str.replace('e', '')
-    data_long = data_long[data_long['year'] != 'unit']
+    data['value'] = data['value'].str.replace(r'[^0-9.]', '', regex=True)
 
-    data_long['year'] = pd.to_numeric(data_long['year'], errors='coerce').astype('int')
-    data_long['value'] = pd.to_numeric(data_long['value'], errors='coerce').astype('float')
-    data_long.dropna(subset=['value'], inplace=True)
+    if any(not isinstance(x, float) for x in data['value']):
+        data['value'] = pd.to_numeric(data['value'], errors='coerce').astype('float')
 
-    data_pt = data_long[data_long['region'] == 'PT']
-    new_directory = os.path.join('life_expectancy/data', 'pt_life_expectancy.csv')
-    data_pt.to_csv(new_directory, index=False)
+    data.dropna(subset=['value'], inplace=True)
+    data_pt = data[data['region'] == country]
+
+    return data_pt
+
+def save_data(data_pt, path_to_save):
+    data_pt.to_csv(path_to_save, index=False)
+
+def main_function(country):
+    path_to_open = Path("life_expectancy/data/eu_life_expectancy_raw.tsv").resolve()
+    path_to_save = Path("life_expectancy/data/pt_life_expectancy.csv").resolve()
+
+    initial_data = load_data(path_to_open)
+    data_pt = clean_data(initial_data, country)
+    save_data(data_pt, path_to_save)
 
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser()
     parser.add_argument("--country", default="PT", help="Country code to filter the data")
     args = parser.parse_args()
-    clean_data(args.country)
+    main_function(args.country)

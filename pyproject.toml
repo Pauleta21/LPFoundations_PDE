@@ -21,6 +21,7 @@ packages = ["life_expectancy"]
 disable = [
    "missing-module-docstring",
    "missing-function-docstring",
+   "line-too-long",
    "unused-argument"]
 
 [tool.coverage.run]
