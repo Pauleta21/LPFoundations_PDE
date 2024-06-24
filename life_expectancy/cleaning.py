@@ -18,7 +18,7 @@ def clean_data(initial_data, country = 'PT'):
     if any(not isinstance(x, int) for x in data['year']):
         data['year'] = pd.to_numeric(data['year'], errors='coerce').astype('int')
 
-    data['value'] = data['value'].str.replace('e', '')
+    data['value'] = data['value'].str.replace(r'[^0-9.]', '', regex=True)
 
     if any(not isinstance(x, float) for x in data['value']):
         data['value'] = pd.to_numeric(data['value'], errors='coerce').astype('float')
@@ -31,7 +31,7 @@ def clean_data(initial_data, country = 'PT'):
 def save_data(data_pt, path_to_save):
     data_pt.to_csv(path_to_save, index=False)
 
-def main_function(country = 'PT'):
+def main_function(country):
     path_to_open = Path("life_expectancy/data/eu_life_expectancy_raw.tsv").resolve()
     path_to_save = Path("life_expectancy/data/pt_life_expectancy.csv").resolve()
 
