@@ -6,7 +6,7 @@ def load_data(path_to_open):
     initial_data = pd.read_csv(path_to_open, sep='\t', header=0)
     return initial_data
 
-def clean_data(initial_data, country = 'PT'):
+def clean_data(initial_data):
     initial_data[['unit', 'sex', 'age','region']] = initial_data['unit,sex,age,geo\\time'].str.split(',', expand=True)
     initial_data = initial_data.drop(['unit,sex,age,geo\\time'], axis=1)
 
@@ -24,20 +24,22 @@ def clean_data(initial_data, country = 'PT'):
         data['value'] = pd.to_numeric(data['value'], errors='coerce').astype('float')
 
     data.dropna(subset=['value'], inplace=True)
-    data_pt = data[data['region'] == country]
 
-    return data_pt
+    return data
 
-def save_data(data_pt, path_to_save):
-    data_pt.to_csv(path_to_save, index=False)
+def save_data(df, path_to_save):
+    df.to_csv(path_to_save, index=False)
 
-def main_function(country):
+def main_function(country = 'PT'):
     path_to_open = Path("life_expectancy/data/eu_life_expectancy_raw.tsv").resolve()
     path_to_save = Path("life_expectancy/data/pt_life_expectancy.csv").resolve()
 
     initial_data = load_data(path_to_open)
-    data_pt = clean_data(initial_data, country)
+    data = clean_data(initial_data)
+    data_pt = data[data['region'] == country]
     save_data(data_pt, path_to_save)
+
+    return data_pt
 
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser()
