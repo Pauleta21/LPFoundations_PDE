@@ -17,5 +17,3 @@ expected_data = clean_data(sample_data)
 
 expected_data_dir = FIXTURE_DIR / "eu_life_expectancy_expected.csv"
 expected_data.to_csv(expected_data_dir, sep='\t', index=False)
-
-
