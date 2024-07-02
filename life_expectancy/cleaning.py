@@ -1,6 +1,6 @@
+from pathlib import Path
 import argparse
 import pandas as pd
-from pathlib import Path
 
 def load_data(path_to_open):
     initial_data = pd.read_csv(path_to_open, sep='\t', header=0)
