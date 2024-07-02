@@ -1,7 +1,10 @@
+#pylint: disable = redefined-outer-name
+#pylint: disable = unused-variable
+
 from pathlib import Path
+from unittest.mock import patch
 import pandas as pd
 import pytest
-from unittest.mock import patch
 
 from life_expectancy.cleaning import main_function
 

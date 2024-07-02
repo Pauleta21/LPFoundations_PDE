@@ -46,4 +46,3 @@ if __name__ == "__main__":  # pragma: no cover
     parser.add_argument("--country", default="PT", help="Country code to filter the data")
     args = parser.parse_args()
     main_function(args.country)
-    
