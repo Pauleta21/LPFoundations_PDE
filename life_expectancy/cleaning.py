@@ -1,6 +1,6 @@
 import argparse
-from pathlib import Path
 import pandas as pd
+from pathlib import Path
 
 def load_data(path_to_open):
     initial_data = pd.read_csv(path_to_open, sep='\t', header=0)
@@ -46,3 +46,4 @@ if __name__ == "__main__":  # pragma: no cover
     parser.add_argument("--country", default="PT", help="Country code to filter the data")
     args = parser.parse_args()
     main_function(args.country)
+    
