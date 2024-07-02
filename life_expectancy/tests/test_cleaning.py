@@ -25,7 +25,7 @@ def expected_pt():
 def test_clean_data(input_data, expected_eu):
     cleaned_data = clean_data(input_data)
     pd.testing.assert_frame_equal(cleaned_data, expected_eu)
-    
+
 @patch('life_expectancy.cleaning.load_data')
 @patch('life_expectancy.cleaning.clean_data')
 @patch('life_expectancy.cleaning.save_data')
