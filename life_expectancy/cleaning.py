@@ -16,12 +16,14 @@ def clean_data(initial_data):
                         var_name='year', value_name='value')
 
     if any(not isinstance(x, int) for x in data['year']):
-        data['year'] = pd.to_numeric(data['year'], errors='coerce').astype('int')
+        data['year'] = pd.to_numeric(data['year'], errors='coerce')
+
+    data.dropna(subset=['year'], inplace=True)
 
     data['value'] = data['value'].str.replace(r'[^0-9.]', '', regex=True)
 
     if any(not isinstance(x, float) for x in data['value']):
-        data['value'] = pd.to_numeric(data['value'], errors='coerce').astype('float')
+        data['value'] = pd.to_numeric(data['value'], errors='coerce')
 
     data.dropna(subset=['value'], inplace=True)
 

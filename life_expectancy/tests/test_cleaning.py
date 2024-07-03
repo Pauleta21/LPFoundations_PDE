@@ -12,18 +12,22 @@ FIXTURE_DIR = Path(__file__).resolve().parent.joinpath("fixtures")
 
 @pytest.fixture
 def input_data():
-    return pd.read_csv(FIXTURE_DIR/"eu_life_expectancy_raw.tsv")
+    return pd.read_csv(FIXTURE_DIR/"eu_life_expectancy_raw.tsv", sep = '\t')
 
 @pytest.fixture
 def expected_eu():
-    return pd.read_csv(FIXTURE_DIR/"eu_life_expectancy_expected.csv")
+    return pd.read_csv(FIXTURE_DIR/"eu_life_expectancy_expected.csv", sep = '\t')
 
 @pytest.fixture
 def expected_pt():
     return pd.read_csv(FIXTURE_DIR/"pt_life_expectancy_expected.csv")
 
 def test_clean_data(input_data, expected_eu):
+    input_data = input_data.drop(['Unnamed: 0'], axis=1)
+    expected_eu = expected_eu.drop(['Unnamed: 0'], axis=1)
     cleaned_data = clean_data(input_data)
+    cleaned_data.reset_index(drop=True, inplace=True)
+    expected_eu.reset_index(drop=True, inplace=True)
     pd.testing.assert_frame_equal(cleaned_data, expected_eu)
 
 @patch('life_expectancy.cleaning.load_data')

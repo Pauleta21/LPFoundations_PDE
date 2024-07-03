@@ -18,6 +18,6 @@ sample_data.to_csv(fixture_raw_data_dir, sep='\t', index=False)
 
 expected_data = clean_data(sample_data)
 
-expected_data.to_csv(expected_data_dir, sep='\t', index=False)
+expected_data.to_csv(expected_data_dir, index=False)
 
 print("Fixtures creados correctamente.")
