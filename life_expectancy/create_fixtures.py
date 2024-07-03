@@ -1,8 +1,9 @@
+# pragma: no cover
+
 from pathlib import Path
 import pandas as pd
 from life_expectancy.cleaning import clean_data
 
-#pragma: no cover
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 FIXTURE_DIR = BASE_DIR / "tests" / "fixtures"
