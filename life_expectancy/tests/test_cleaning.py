@@ -1,26 +1,23 @@
-#pylint: disable = redefined-outer-name
-#pylint: disable = unused-variable
-
 from pathlib import Path
 from unittest.mock import patch
 import pandas as pd
 import pytest
 
-from life_expectancy.cleaning import main_function, clean_data
+from . import FIXTURES_DIR
 
-FIXTURE_DIR = Path(__file__).resolve().parent.joinpath("fixtures")
+from life_expectancy.cleaning import main_function, clean_data
 
 @pytest.fixture
 def input_data():
-    return pd.read_csv(FIXTURE_DIR/"eu_life_expectancy_raw.tsv", sep = '\t')
+    return pd.read_csv(FIXTURES_DIR/"eu_life_expectancy_raw.tsv", sep = '\t')
 
 @pytest.fixture
 def expected_eu():
-    return pd.read_csv(FIXTURE_DIR/"eu_life_expectancy_expected.csv", sep = '\t')
+    return pd.read_csv(FIXTURES_DIR/"eu_life_expectancy_expected.csv", sep = '\t')
 
 @pytest.fixture
 def expected_pt():
-    return pd.read_csv(FIXTURE_DIR/"pt_life_expectancy_expected.csv")
+    return pd.read_csv(FIXTURES_DIR/"pt_life_expectancy_expected.csv")
 
 def test_clean_data(input_data, expected_eu):
     input_data = input_data.drop(['Unnamed: 0'], axis=1)

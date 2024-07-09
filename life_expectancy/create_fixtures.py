@@ -6,11 +6,11 @@ from life_expectancy.cleaning import clean_data
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
-FIXTURE_DIR = BASE_DIR / "tests" / "fixtures"
+FIXTURES_DIR = BASE_DIR / "tests" / "fixtures"
 
 raw_data_dir = DATA_DIR / "eu_life_expectancy_raw.tsv"
-fixture_raw_data_dir = FIXTURE_DIR / "eu_life_expectancy_raw.tsv"
-expected_data_dir = FIXTURE_DIR / "eu_life_expectancy_expected.csv"
+fixture_raw_data_dir = FIXTURES_DIR / "eu_life_expectancy_raw.tsv"
+expected_data_dir = FIXTURES_DIR / "eu_life_expectancy_expected.csv"
 
 raw_data = pd.read_csv(raw_data_dir, sep='\t')
 
