@@ -4,9 +4,10 @@ from pathlib import Path
 import pandas as pd
 from life_expectancy.cleaning import clean_data
 
+from . import FIXTURES_DIR
+
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
-FIXTURES_DIR = BASE_DIR / "tests" / "fixtures"
 
 raw_data_dir = DATA_DIR / "eu_life_expectancy_raw.tsv"
 fixture_raw_data_dir = FIXTURES_DIR / "eu_life_expectancy_raw.tsv"
