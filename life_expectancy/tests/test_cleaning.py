@@ -1,11 +1,13 @@
-from pathlib import Path
+# pylint: disable=redefined-outer-name
+# pylint: disable=unused-variable
+
 from unittest.mock import patch
 import pandas as pd
 import pytest
 
-from . import FIXTURES_DIR
-
 from life_expectancy.cleaning import main_function, clean_data
+
+from . import FIXTURES_DIR
 
 @pytest.fixture
 def input_data():
