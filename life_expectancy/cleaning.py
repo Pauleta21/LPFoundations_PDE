@@ -33,8 +33,9 @@ def save_data(df, path_to_save):
     df.to_csv(path_to_save, index=False)
 
 def main_function(country = 'PT'):
-    path_to_open = Path("life_expectancy/data/eu_life_expectancy_raw.tsv").resolve()
-    path_to_save = Path("life_expectancy/data/pt_life_expectancy.csv").resolve()
+    dir = Path(__file__).resolve().parent
+    path_to_open = dir / "data" / "eu_life_expectancy_raw.tsv"
+    path_to_save = dir / "data" / f"{country.lower()}_life_expectancy.csv"
 
     initial_data = load_data(path_to_open)
     data = clean_data(initial_data)
