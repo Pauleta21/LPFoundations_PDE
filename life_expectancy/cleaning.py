@@ -5,12 +5,25 @@
 from pathlib import Path
 import argparse
 from enum import Enum
+import os
 import pandas as pd
 
 from life_expectancy.region_enum import Region
 
+from life_expectancy.load_file_strategy import CSVDataLoad, JSONDataLoad, DataLoaderContext
+
 def load_data(path_to_open) -> pd.DataFrame:
-    initial_data = pd.read_csv(path_to_open, sep='\t', header=0)
+    _, file_extension = os.path.splitext(path_to_open)
+
+    if file_extension.lower() == '.tsv':
+        strategy = CSVDataLoad()
+    elif file_extension.lower() == '.json':
+        strategy = JSONDataLoad()
+    else:
+        raise ValueError('File format not supported')
+
+    context = DataLoaderContext(strategy)
+    initial_data = context.load(path_to_open)
     return initial_data
 
 def clean_data(initial_data) -> pd.DataFrame:
@@ -46,6 +59,7 @@ def main_function(Region: Enum):
     path_to_save = directory / "data" / "pt_life_expectancy.csv"
 
     initial_data = load_data(path_to_open)
+
     data = clean_data(initial_data)
 
     try:
